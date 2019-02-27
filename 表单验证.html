@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>Document</title>
+    <script src="common.js"></script>
+</head>
+<body>
+    <form  action="get">
+        QQ号：<input type="text" name="qq" id="txtQQ"><span></span><br>
+        邮箱：<input type="text" name="email" id="txtEMail"><span></span><br>
+        手机：<input type="text" name="phone" id="txtPhone"><span></span><br>
+        生日：<input type="text" name="birthday" id="txtBirthday"><span></span><br>
+        姓名：<input type="text" name="name" id="txtName"><span></span><br>
+        <input type="submit" id="mysubmit" value="提交">
+    </form>
+
+</body>
+
+<script>
+    //1.获取页面所有的inputs
+    var inputs = my$byTagName("input");
+    //2.遍历inputs绑定事件
+    for(var i=0;i<inputs.length;i++){
+        inputs[i].onblur = function(){
+            checkCorrect(this);
+        }
+    }
+    //3.每次文本框失去焦点时候确定文本框对应的正则以及提示
+    function checkCorrect(ele){
+        var reg = null;
+        var tip = null;
+        //检验QQ
+        if(ele.getAttribute("name") == "qq") {
+            reg = /^[1-9]\d{4,10}$/;
+            tip = "请输入正确的QQ号码";
+        }
+        //校验email
+        else if(ele.getAttribute("name") == "email"){
+            reg = /^\w+@\w+\.\w+(\.\w+)?$/;
+            tip = "请输入正确的email";
+        }
+        else if(ele.getAttribute("name") == "phone"){
+            reg = /^1[34578]\d{9}$/;
+            tip = "请输入正确的手机号码";
+        }
+        else if(ele.getAttribute("name") == "birthday"){
+            reg = /^((\d{4})-(\d{2})-(\d{2}))$/;
+            tip = "请输入正确的生日";
+        }
+        else if(ele.getAttribute("name") == "name"){
+            reg = /^\w{2,}$/;
+            tip = "请输入正确的名字";
+        }
+        //真正去进行校验
+        return doCheck(ele,reg,tip);
+    }
+
+    //正则的校验
+    function doCheck(element, reg, tip){
+        //获取当前input的下一个兄弟元素
+        var span = element.nextElementSibling;
+        //如果正则校验通过，则输入正确
+        if(reg.test(element.value)){
+            span.style.color = "green";
+            setInnerText(span,"输入正确");
+            return true;
+        }
+        else{
+            span.style.color = "red";
+            setInnerText(span,tip);
+            return false;
+        }
+    }
+
+    //提交按钮的点击事件
+    my$("mysubmit").onclick = function(){
+        //1.验证之前先清空之前的信息
+        clearMsg();
+        //2.开始验证
+        return checkCorrect(my$byTagName("input")[0])
+                &&checkCorrect(my$byTagName("input")[1])
+                &&checkCorrect(my$byTagName("input")[2])
+                &&checkCorrect(my$byTagName("input")[3])
+                &&checkCorrect(my$byTagName("input")[4]);
+    }
+
+    //清空之前span中显示的信息
+    function clearMsg(){
+        var allspan = my$byTagName("span");
+        for(var i=0;i<allspan.length;i++){
+            setInnerText(allspan[i],"");
+            allspan[i].style.color = "green";
+        }
+    }
+
+</script>
+
+</html>
